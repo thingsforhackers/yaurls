@@ -98,4 +98,8 @@ Content-Type: text/html; charset=utf-8
 
 As a further test, point your web browser at http://127.0.0.1:8080/go/tech, you should get redirected to the BBC's technology homepage.
 
-<TBC>
+## License
+
+Yet Another URL Shortener (yaurls) is released under the [MIT license][license].
+
+[license]: LICENSE
