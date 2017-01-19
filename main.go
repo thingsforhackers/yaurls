@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/user"
 
+	"github.com/ajays20078/go-http-logger"
 	"github.com/gorilla/mux"
 )
 
@@ -23,6 +24,7 @@ type Flags struct {
 	dbPath      string
 	portNum     int
 	updateToken string
+	debug       bool
 }
 
 var flags Flags
@@ -36,11 +38,18 @@ func init() {
 	}
 	flag.IntVar(&flags.portNum, "portNum", 8080, "Port to listen on")
 	flag.StringVar(&flags.updateToken, "updateToken", "", "Optional token required for DB modification operations")
+	flag.BoolVar(&flags.debug, "debug", false, "Enable debug output")
 }
 
 func main() {
 
 	flag.Parse()
+
+	if flags.debug {
+		fmt.Printf("Port: %d\n", flags.portNum)
+		fmt.Printf("DbPath: %s\n", flags.dbPath)
+		fmt.Printf("Token: %s\n", flags.updateToken)
+	}
 
 	us := new(URLstore)
 
@@ -52,7 +61,11 @@ func main() {
 
 	r := setUpRoutes(us)
 
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", flags.portNum), r))
+	if flags.debug {
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", flags.portNum), httpLogger.WriteLog(r, os.Stdout)))
+	} else {
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", flags.portNum), r))
+	}
 }
 
 /*
